@@ -1,27 +1,32 @@
-// const express = require('express');
-// const db = require('./db/connection');
-// const apiRoutes = require('./routes/apiRoutes');
+const { beforeAll } = require("jest-circus");
+const connection = require("./routes/connection.js");
+const inquirer = require("inquirer");
 
-// const PORT = process.env.PORT || 3001;
-// const app = express();
+//initial user questions
+function promptUser() {
+  inquirer
+    .prompt([
+      {
+        type: "list",
+        name: "answer",
+        message: "What would you like to do?",
+        choices: ["view", "add", "update"],
+      },
+    ])
+    .then(function (res) {
+      switch (res.start) {
+        case "view":
+          view();
+          break;
+        case "add":
+          add();
+          break;
+        case "update":
+          upate();
+          break;
+      }
+    });
+}
 
-// // Express middleware
-// app.use(express.urlencoded({ extended: false }));
-// app.use(express.json());
+promptUser();
 
-// // Use apiRoutes
-// app.use('/api', apiRoutes);
-
-// // Default response for any other request (Not Found)
-// app.use((req, res) => {
-//   res.status(404).end();
-// });
-
-// // Start server after DB connection
-// db.connect(err => {
-//   if (err) throw err;
-//   console.log('Database connected.');
-//   app.listen(PORT, () => {
-//     console.log(`Server running on port ${PORT}`);
-//   });
-// });
