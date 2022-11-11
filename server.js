@@ -57,3 +57,71 @@ function view() {
       }
     });
 }
+
+// //view department, role, and employee
+// viewDepartment();
+// viewRole();
+// viewEmployee();
+
+//add
+function add() {
+  inquirer
+    .prompt([
+      {
+        type: "list",
+        name: "add",
+        message: "What would you like to add?",
+        choices: ["department", "role", "employee"],
+      },
+    ])
+    .then(function (res) {
+      switch (res.add) {
+        case "department":
+          addDepartment();
+          break;
+        case "role":
+          addRole();
+          break;
+        case "employee":
+          addEmployee();
+          break;
+      }
+    });
+}
+
+// //add department, role, and employee
+// addDepartment();
+// addRole();
+// addEmployee();
+
+//update
+function update() {
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        name: "employee_id",
+        message: "Employee ID:",
+      },
+      {
+        type: "input",
+        name: "employee_role",
+        message: "Employee Role:",
+      },
+    ])
+    .then(function (res) {
+      connection.query(
+        "UPDATE employee",
+        [
+          { employee_id: res.employee_id },
+          { employee_role: res.employee_role },
+        ],
+        function (err, res) {
+          if (err) throw err;
+          start();
+        }
+      );
+    });
+}
+
+//update employee
