@@ -1,6 +1,8 @@
 const { beforeAll } = require("jest-circus");
 const connection = require("./routes/connection.js");
 const inquirer = require("inquirer");
+const { red } = require("color-name");
+const db = require("./routes/connection.js");
 
 //initial user questions
 function promptUser() {
@@ -8,13 +10,13 @@ function promptUser() {
     .prompt([
       {
         type: "list",
-        name: "answer",
+        name: "promptUser",
         message: "What would you like to do?",
         choices: ["view", "add", "update"],
       },
     ])
     .then(function (res) {
-      switch (res.start) {
+      switch (res.promptUser) {
         case "view":
           view();
           break;
@@ -22,7 +24,7 @@ function promptUser() {
           add();
           break;
         case "update":
-          upate();
+          update();
           break;
       }
     });
@@ -30,3 +32,28 @@ function promptUser() {
 
 promptUser();
 
+//view
+function view() {
+  inquirer
+    .prompt([
+      {
+        type: "list",
+        name: "view",
+        message: "What would you like to view?",
+        choices: ["department", "role", "employee"],
+      },
+    ])
+    .then(function (res) {
+      switch (res.view) {
+        case "department":
+          viewDepartment();
+          break;
+        case "role":
+          viewRole();
+          break;
+        case "employee":
+          viewEmployee();
+          break;
+      }
+    });
+}
