@@ -1,7 +1,7 @@
 const { beforeAll } = require("jest-circus");
 const connection = require("./routes/connection.js");
 const inquirer = require("inquirer");
-const { red } = require("color-name");
+//const { red } = require("color-name");
 const db = require("./routes/connection.js");
 
 //initial user questions
@@ -105,11 +105,99 @@ function add() {
 }
 
 // //add department, role, and employee
-// addDepartment();
-// addRole();
-// addEmployee();
+function addDepartment() {
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        name: "department",
+        message: "what department?",
+      },
+    ])
+    .then(function (res) {
+      db.query(
+        "INSERT INTO department SET",
+        { department: res.department_id },
+        (err, res) => {
+          promptUser();
+        }
+      );
+    });
+}
+function addRole() {
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        name: "role",
+        message: "what role?",
+      },
+      {
+        type: "input",
+        name: "salary",
+        message: "what is the salary?",
+      },
+      {
+        type: "input",
+        name: "department",
+        message: "what department?",
+      },
+    ])
+    .then(function (res) {
+      db.query(
+        "INSERT INTO role SET",
+        {
+          role: res.role_id,
+          salary: res.salary,
+          department: res.department_id,
+        },
+        (err, res) => {
+          promptUser();
+        }
+      );
+    });
+}
+function addEmployee() {
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        name: "first_name",
+        message: "what is the first name?",
+      },
+      {
+        type: "input",
+        name: "last_name",
+        message: "what is the last name?",
+      },
+      {
+        type: "input",
+        name: "role",
+        message: "what role?",
+      },
+      {
+        type: "input",
+        name: "manager",
+        message: "which manager?",
+      },
+    ])
+    .then(function (res) {
+      db.query(
+        "INSERT INTO employee SET",
+        {
+          first_name: res.first_name,
+          last_name: res.last_name,
+          role: res.role_id,
+          manager: res.manager_id,
+        },
+        (err, res) => {
+          promptUser();
+        }
+      );
+    });
+}
 
-//update
+//update employee
 function update() {
   inquirer
     .prompt([
@@ -125,15 +213,14 @@ function update() {
       },
     ])
     .then(function (res) {
-      connection.query(
+      db.query(
         "UPDATE employee",
         [
           { employee_id: res.employee_id },
           { employee_role: res.employee_role },
         ],
-        function (err, res) {
-          if (err) throw err;
-          start();
+        (err, res) => {
+          promptUser();
         }
       );
     });
