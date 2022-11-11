@@ -59,9 +59,24 @@ function view() {
 }
 
 // //view department, role, and employee
-// viewDepartment();
-// viewRole();
-// viewEmployee();
+function viewDepartment() {
+  db.query("SELECT * FROM department", function (err, res) {
+    if (err) throw err;
+    console.table(res);
+  });
+}
+function viewRole() {
+  db.query("SELECT * FROM role", function (err, res) {
+    if (err) throw err;
+    console.table(res);
+  });
+}
+function viewEmployee() {
+  db.query("SELECT * FROM employee", function (err, res) {
+    if (err) throw err;
+    console.table(res);
+  });
+}
 
 //add
 function add() {
