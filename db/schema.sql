@@ -4,7 +4,7 @@ USE employees;
 
 CREATE TABLE department (
   id INTEGER AUTO_INCREMENT PRIMARY KEY,
-  department_name VARCHAR(30) NOT NULL
+  name VARCHAR(30) NOT NULL
 );
 
 CREATE TABLE role (
@@ -21,8 +21,3 @@ CREATE TABLE employee (
   role_id INTEGER,
   manager_id INTEGER
 );
-
---employee data, employee ids, first names, last names, job titles, departments, salaries, and managers
---department
---id: INT PRIMARY KEY
---name: VARCHAR(30) to hold department name

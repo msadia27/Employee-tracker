@@ -1,8 +1,20 @@
 const { beforeAll } = require("jest-circus");
-const connection = require("./routes/connection.js");
+//const connection = require("./routes/connection.js");
 const inquirer = require("inquirer");
 //const { red } = require("color-name");
 const db = require("./routes/connection.js");
+const cTable = require("console.table");
+require("dotenv").config();
+
+// Start server after DB connection
+db.connect((err) => {
+  if (err) throw err;
+  console.log("Database connected.");
+  // app.listen(PORT, () => {
+  //   console.log(`Server running on port ${PORT}`);
+  // });
+  promptUser();
+});
 
 //initial user questions
 function promptUser() {
@@ -12,7 +24,7 @@ function promptUser() {
         type: "list",
         name: "promptUser",
         message: "What would you like to do?",
-        choices: ["view", "add", "update"],
+        choices: ["view", "add", "update", "exit"],
       },
     ])
     .then(function (res) {
@@ -26,11 +38,14 @@ function promptUser() {
         case "update":
           update();
           break;
+        case "exit":
+          break;
+        default:
       }
     });
 }
 
-promptUser();
+//promptUser();
 
 //view
 function view() {
@@ -54,6 +69,7 @@ function view() {
         case "employee":
           viewEmployee();
           break;
+        default:
       }
     });
 }
@@ -63,18 +79,21 @@ function viewDepartment() {
   db.query("SELECT * FROM department", function (err, res) {
     if (err) throw err;
     console.table(res);
+    promptUser();
   });
 }
 function viewRole() {
   db.query("SELECT * FROM role", function (err, res) {
     if (err) throw err;
     console.table(res);
+    promptUser();
   });
 }
 function viewEmployee() {
   db.query("SELECT * FROM employee", function (err, res) {
     if (err) throw err;
     console.table(res);
+    promptUser();
   });
 }
 
@@ -104,7 +123,7 @@ function add() {
     });
 }
 
-// //add department, role, and employee
+//add department, role, and employee
 function addDepartment() {
   inquirer
     .prompt([
@@ -116,9 +135,10 @@ function addDepartment() {
     ])
     .then(function (res) {
       db.query(
-        "INSERT INTO department SET",
-        { department: res.department_id },
+        "INSERT INTO department SET ?",
+        { department_name: res.department },
         (err, res) => {
+          if (err) throw err;
           promptUser();
         }
       );
@@ -129,8 +149,8 @@ function addRole() {
     .prompt([
       {
         type: "input",
-        name: "role",
-        message: "what role?",
+        name: "title",
+        message: "what role title?",
       },
       {
         type: "input",
@@ -139,19 +159,20 @@ function addRole() {
       },
       {
         type: "input",
-        name: "department",
+        name: "department_id",
         message: "what department?",
       },
     ])
     .then(function (res) {
       db.query(
-        "INSERT INTO role SET",
+        "INSERT INTO role SET ?",
         {
-          role: res.role_id,
+          title: res.title,
           salary: res.salary,
-          department: res.department_id,
+          department_id: res.department_id,
         },
         (err, res) => {
+          if (err) throw err;
           promptUser();
         }
       );
@@ -172,25 +193,26 @@ function addEmployee() {
       },
       {
         type: "input",
-        name: "role",
+        name: "role_id",
         message: "what role?",
       },
       {
         type: "input",
-        name: "manager",
+        name: "manager_id",
         message: "which manager?",
       },
     ])
     .then(function (res) {
       db.query(
-        "INSERT INTO employee SET",
+        "INSERT INTO employee SET ?",
         {
           first_name: res.first_name,
           last_name: res.last_name,
-          role: res.role_id,
-          manager: res.manager_id,
+          role_id: res.role_id,
+          manager_id: res.manager_id,
         },
         (err, res) => {
+          if (err) throw err;
           promptUser();
         }
       );
@@ -203,22 +225,19 @@ function update() {
     .prompt([
       {
         type: "input",
-        name: "employee_id",
+        name: "id",
         message: "Employee ID:",
       },
       {
         type: "input",
-        name: "employee_role",
+        name: "role_id",
         message: "Employee Role:",
       },
     ])
     .then(function (res) {
       db.query(
-        "UPDATE employee",
-        [
-          { employee_id: res.employee_id },
-          { employee_role: res.employee_role },
-        ],
+        "UPDATE employee SET ? WHERE ?",
+        [{ id: res.id }, { role_id: res.role_id }],
         (err, res) => {
           promptUser();
         }
